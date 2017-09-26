@@ -13,6 +13,8 @@ def updateFantasyValues():
 	getStats()
 	# Get dictionary of player costs
 	player_cost_dict = getPlayerCosts()
+	# Initialize player list
+	player_list = []
 
 	# Open value csv to write to
 	with open(player_value_fn, 'wb') as value_file:
@@ -36,7 +38,6 @@ def updateFantasyValues():
 
 					# Get Player cost from dictionary
 					cost = player_cost_dict[name.lower()]
-					print cost
 
 					# Get average score per game 
 					if not(total):
@@ -47,9 +48,14 @@ def updateFantasyValues():
 					# Calculate player value (avg score / cost)
 					value = avg_score /  float(cost)
 
-					value_writer.writerow([name, cost, avg_score, value])
+					player_list.append([name, float(cost), avg_score, value])
 
+			# Sort player list by value
+			sorted_player_list = sorted(player_list, key=lambda l:l[3], reverse=True)
 
+			# Write sorted list to csv
+			for player_info in sorted_player_list:
+				value_writer.writerow(player_info)
 
 
 def getPlayerCosts():
